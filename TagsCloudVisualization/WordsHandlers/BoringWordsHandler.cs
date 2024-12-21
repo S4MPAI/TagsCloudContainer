@@ -1,20 +1,17 @@
+using DeepMorphy;
+
 namespace TagsCloudVisualization.WordsHandlers;
 
-public class BoringWordsHandler(Mystem.Net.Mystem mystem) : IWordHandler
+public class BoringWordsHandler : IWordHandler
 {
+    private static readonly MorphAnalyzer Analyzer = new();
+    private static readonly HashSet<string> CorrectSpeechParts = ["сущ", "инф_гл", "прил", "деепр"];
+    
     public IEnumerable<string> Handle(IEnumerable<string> words)
     {
-        foreach (var word in words)
-        {
-            var lemma = mystem.Mystem.Analyze(word).Result![0];
-
-            var grammeme = lemma.AnalysisResults.First().Grammeme!;
-            var speechPart = grammeme[..grammeme.IndexOf(',')];
-            
-            if (speechPart != "S" && speechPart != "V")
-                continue;
-            
-            yield return word;
-        }
+        return Analyzer
+            .Parse(words)
+            .Where(x => CorrectSpeechParts.Contains(x["чр"].BestGramKey))
+            .Select(x => x.Text);
     }
 }

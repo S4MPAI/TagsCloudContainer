@@ -14,7 +14,6 @@ public static class ContainerBuilderExtensions
 {
     public static ContainerBuilder RegisterWordAnalytics(this ContainerBuilder builder)
     {
-        builder.RegisterType<Mystem.Net.Mystem>().AsSelf();
         builder.RegisterInstance(WordList.CreateFromFiles("Dictionaries/ru/ru.dic"));
         
         return builder;
@@ -80,7 +79,7 @@ public static class ContainerBuilderExtensions
     
     public static ContainerBuilder RegisterTagVisualizer(this ContainerBuilder builder)
     {
-        builder.RegisterType<TagVisualizer>().As<ITagVisualizer>();
+        builder.RegisterType<CartesianTagVisualizer>().As<ITagVisualizer>();
         
         return builder;
     }
