@@ -2,7 +2,7 @@ using System.Drawing;
 using NUnit.Framework;
 using TagsCloudVisualization.Base;
 
-namespace TagsCloudVisualizationTests;
+namespace TagsCloudVisualizationTests.Base;
 
 [TestFixture]
 [Parallelizable(ParallelScope.Self)]

@@ -3,7 +3,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using TagsCloudVisualization.Extensions;
 
-namespace TagsCloudVisualizationTests;
+namespace TagsCloudVisualizationTests.Extensions;
 
 [TestFixture]
 [Parallelizable(ParallelScope.Self)]

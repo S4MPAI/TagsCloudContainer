@@ -4,7 +4,7 @@ using NUnit.Framework;
 using TagsCloudVisualization.Base;
 using TagsCloudVisualization.PointsGenerators;
 
-namespace TagsCloudVisualizationTests;
+namespace TagsCloudVisualizationTests.PointsGenerators;
 
 [TestFixture]
 [Parallelizable(ParallelScope.All)]

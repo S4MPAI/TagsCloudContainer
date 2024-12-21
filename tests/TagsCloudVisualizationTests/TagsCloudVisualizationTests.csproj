@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="FakeItEasy" Version="8.3.0" />
       <PackageReference Include="FluentAssertions" Version="7.0.0-alpha.5" />
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
       <PackageReference Include="NUnit" Version="4.2.2" />
@@ -17,4 +18,7 @@
       <ProjectReference Include="..\..\TagsCloudVisualization\TagsCloudVisualization.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <RuntimeHostConfigurationOption Include="System.Runtime.Loader.UseRidGraph" Value="true" />
+    </ItemGroup>
 </Project>

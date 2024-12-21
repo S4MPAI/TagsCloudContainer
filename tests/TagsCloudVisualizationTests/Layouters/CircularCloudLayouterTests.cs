@@ -10,7 +10,7 @@ using TagsCloudVisualization.Extensions;
 using TagsCloudVisualization.Layouters;
 using TagsCloudVisualization.Visualizers;
 
-namespace TagsCloudVisualizationTests;
+namespace TagsCloudVisualizationTests.Layouters;
 
 [TestFixture]
 [Parallelizable(ParallelScope.All)]
