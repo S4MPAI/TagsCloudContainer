@@ -18,6 +18,7 @@
 
     <ItemGroup>
       <Folder Include="Dictionaries\ru\" />
+      <Folder Include="OutputImages\" />
     </ItemGroup>
 
     <ItemGroup>
@@ -27,6 +28,13 @@
       <None Update="Dictionaries\ru\ru.dic">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="InputTexts\Text.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
+    <ItemGroup>
+        <RuntimeHostConfigurationOption Include="System.Runtime.Loader.UseRidGraph" Value="true" />
+    </ItemGroup>
+    
 </Project>

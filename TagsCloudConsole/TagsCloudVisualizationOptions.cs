@@ -1,14 +1,19 @@
 using CommandLine;
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 namespace TagsCloudConsole;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 public class TagsCloudVisualizationOptions
 {
-    [Option('s', "pathToSave", Required = true)]
-    public string PathToSave { get; set; }
+    [Option('s', "inputFilePath", Required = true)]
+    public string InputFilePath { get; set; }
     
-    [Option('l', "pathToLoad", Required = true)]
-    public string PathToLoad { get; set; }
+    [Option('l', "outputFilePath", Required = true)]
+    public string OutputFilePath { get; set; }
+    
+    [Option("fontFamily", Required = true)]
+    public string FontFamily { get; set; }
     
     [Option('c', "colorName", Required = false, Default = "Black")]
     public string ColorName { get; set; }
@@ -25,6 +30,9 @@ public class TagsCloudVisualizationOptions
     [Option("fontMaxSize", Required = false, Default = 28)]
     public int MaxFontSize { get; set; }
     
-    [Option("fontFamily", Required = true)]
-    public string FontFamily { get; set; }
+    [Option("width", Required = false, Default = 2000)]
+    public int ImageWidth { get; set; }
+    
+    [Option("height", Required = false, Default = 2000)]
+    public int ImageHeight { get; set; }
 }

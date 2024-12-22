@@ -20,11 +20,11 @@ public static class Program
             .RegisterColorFactory(options)
             .RegisterCloudLayouter(options)
             .RegisterTagLayouter(options)
-            .RegisterTagVisualizer()
+            .RegisterTagVisualizer(options)
             .RegisterTagsCloudImageCreator()
             .Build();
 
         var creator = container.Resolve<TagsCloudImageCreator>();
-        creator.CreateImageWithTags(options.PathToLoad);
+        creator.CreateImageWithTags(options.InputFilePath);
     }
 }

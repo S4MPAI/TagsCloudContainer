@@ -1,4 +1,6 @@
+using System.Drawing;
 using Autofac;
+using DeepMorphy;
 using TagsCloudVisualization;
 using TagsCloudVisualization.ColorFactories;
 using TagsCloudVisualization.ImageSavers;
@@ -15,6 +17,7 @@ public static class ContainerBuilderExtensions
     public static ContainerBuilder RegisterWordAnalytics(this ContainerBuilder builder)
     {
         builder.RegisterInstance(WordList.CreateFromFiles("Dictionaries/ru/ru.dic"));
+        builder.RegisterType<MorphAnalyzer>().AsSelf().SingleInstance();
         
         return builder;
     }
@@ -28,23 +31,26 @@ public static class ContainerBuilderExtensions
     
     public static ContainerBuilder RegisterImageSavers(this ContainerBuilder builder, TagsCloudVisualizationOptions options)
     {
-        builder.RegisterType<PngSaver>().WithParameter("path", options.PathToSave).As<IImageSaver>();
+        builder.RegisterType<PngSaver>().WithParameter("path", options.OutputFilePath).As<IImageSaver>();
         
         return builder;
     }
     
     public static ContainerBuilder RegisterColorFactory(this ContainerBuilder builder, TagsCloudVisualizationOptions options)
     {
-        builder.RegisterType<DefaultColorFactory>().As<IColorFactory>().WithParameter("colorName", options.ColorName);
+        if (options.ColorName == "random")
+            builder.RegisterType<RandomColorFactory>().As<IColorFactory>();
+        else
+            builder.RegisterType<DefaultColorFactory>().As<IColorFactory>().WithParameter("colorName", options.ColorName);
         
         return builder;
     }
     
     public static ContainerBuilder RegisterWordHandlers(this ContainerBuilder builder)
     {
-        builder.RegisterType<WordsInLowerCaseHandler>().As<IColorFactory>();
-        builder.RegisterType<BoringWordsHandler>().As<IColorFactory>();
-        builder.RegisterType<StemmingWordsHandler>().As<IColorFactory>();
+        builder.RegisterType<WordsInLowerCaseHandler>().As<IWordHandler>();
+        builder.RegisterType<BoringWordsHandler>().As<IWordHandler>();
+        builder.RegisterType<StemmingWordsHandler>().As<IWordHandler>();
         
         return builder;
     }
@@ -54,6 +60,7 @@ public static class ContainerBuilderExtensions
         builder
             .RegisterType<CircularCloudLayouter>()
             .WithParameters([
+                new NamedParameter("center", new Point(options.ImageWidth / 2, options.ImageHeight / 2)),
                 new NamedParameter("radius", options.LayoutRadius),
                 new NamedParameter("angleOffset", options.LayoutAngleOffset)
             ])
@@ -77,9 +84,12 @@ public static class ContainerBuilderExtensions
         return builder;
     }
     
-    public static ContainerBuilder RegisterTagVisualizer(this ContainerBuilder builder)
+    public static ContainerBuilder RegisterTagVisualizer(this ContainerBuilder builder, TagsCloudVisualizationOptions options)
     {
-        builder.RegisterType<CartesianTagVisualizer>().As<ITagVisualizer>();
+        builder
+            .RegisterType<TagVisualizer>()
+            .As<ITagVisualizer>()
+            .WithParameter("imageSize", new Size(options.ImageWidth, options.ImageHeight));
         
         return builder;
     }
