@@ -1,10 +1,10 @@
 using System.Drawing;
 using FakeItEasy;
 using FluentAssertions;
-using FluentAssertions.Execution;
 using NUnit.Framework;
 using TagsCloudVisualization.Layouters;
 using TagsCloudVisualization.Models;
+using TagsCloudVisualization.Options;
 
 namespace TagsCloudVisualizationTests.Layouters;
 
@@ -12,7 +12,7 @@ public class TagLayouterTests
 {
     private ICloudLayouter _cloudLayouterMock;
     private Rectangle[] _wordPlaces;
-    
+
     [SetUp]
     public void SetUp()
     {
@@ -34,18 +34,18 @@ public class TagLayouterTests
     {
         var options = new TagLayouterOptions(minFonSize, maxFonSize, "Arial");
         var constructor = () => new TagLayouter(_cloudLayouterMock, options);
-        
+
         constructor.Should().Throw<ArgumentException>();
     }
 
-    
+
     [Test]
     public void GetTags_ShouldReturnTags()
     {
         var a = new TagLayouter(_cloudLayouterMock, new TagLayouterOptions(10, 20, "Arial"));
         var words = new List<string> { "слово", "одежда", "ежевика", "слово", "слово", "одежда" };
         var fontFamily = new FontFamily("Arial");
-        
+
         var actualTags = a.GetTags(words).ToList();
         var expectedTags = new Tag[]
         {
@@ -53,12 +53,9 @@ public class TagLayouterTests
             new("одежда", 15, fontFamily, _wordPlaces[1]),
             new("ежевика", 10, fontFamily, _wordPlaces[2])
         };
-        
+
         actualTags.Count.Should().Be(3);
         for (var i = 0; i < actualTags.Count; i++)
             actualTags[i].Should().BeEquivalentTo(expectedTags[i]);
     }
-
-    private static void AssertTag(Tag actualTag, Tag expectedTag) => 
-        actualTag.Should().BeEquivalentTo(expectedTag);
 }

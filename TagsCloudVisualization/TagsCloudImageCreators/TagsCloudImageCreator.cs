@@ -5,17 +5,17 @@ using TagsCloudVisualization.TextReaders;
 using TagsCloudVisualization.Visualizers;
 using TagsCloudVisualization.WordsHandlers;
 
-namespace TagsCloudVisualization;
+namespace TagsCloudVisualization.TagsCloudImageCreators;
 
 public class TagsCloudImageCreator(
     ITextReader[] textReaders,
     IWordHandler[] wordHandlers,
     ITagLayouter tagLayouter,
     ITagVisualizer visualizer,
-    IImageSaver imageSaver)
+    IImageSaver imageSaver) : ITagsCloudImageCreator
 {
     private static readonly Regex GetWordsRegex = new(@"\b[a-zA-Zа-яА-ЯёЁ]+\b", RegexOptions.Compiled);
-    
+
     public void CreateImageWithTags(string pathToText)
     {
         var text = textReaders
@@ -25,10 +25,10 @@ public class TagsCloudImageCreator(
 
         foreach (var wordHandler in wordHandlers)
             words = wordHandler.Handle(words);
-        
+
         var tags = tagLayouter.GetTags(words);
         using var bitmap = visualizer.Visualize(tags);
-        
+
         imageSaver.Save(bitmap);
     }
 

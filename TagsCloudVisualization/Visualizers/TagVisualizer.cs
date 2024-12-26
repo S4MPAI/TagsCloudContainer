@@ -13,12 +13,12 @@ public class TagVisualizer(IColorFactory colorFactory, Size imageSize) : ITagVis
 
         foreach (var tag in tags)
         {
-            var brush = new SolidBrush(colorFactory.GetColor());
-            var font = new Font(tag.FontFamily, tag.FontSize);
-            
+            using var brush = new SolidBrush(colorFactory.GetColor());
+            using var font = new Font(tag.FontFamily, tag.FontSize);
+
             graphics.DrawString(tag.Content, font, brush, tag.Rectangle);
         }
-        
+
         return bitmap;
     }
 }

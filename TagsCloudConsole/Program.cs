@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using TagsCloudConsole.Extensions;
-using TagsCloudVisualization;
+using TagsCloudVisualization.TagsCloudImageCreators;
 
 namespace TagsCloudConsole;
 
