@@ -24,7 +24,7 @@ public static class Program
             .RegisterTagsCloudImageCreator()
             .Build();
 
-        var creator = container.Resolve<TagsCloudImageCreator>();
+        var creator = container.Resolve<ITagsCloudImageCreator>();
         creator.CreateImageWithTags(options.InputFilePath);
     }
 }

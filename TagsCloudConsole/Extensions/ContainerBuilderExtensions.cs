@@ -1,5 +1,7 @@
 using System.Drawing;
+using System.Security.Cryptography;
 using Autofac;
+using Autofac.Core;
 using DeepMorphy;
 using TagsCloudVisualization.ColorFactories;
 using TagsCloudVisualization.ImageSavers;
@@ -32,7 +34,9 @@ public static class ContainerBuilderExtensions
 
     public static ContainerBuilder RegisterImageSavers(this ContainerBuilder builder, TagsCloudVisualizationOptions options)
     {
-        builder.RegisterType<PngSaver>().WithParameter("path", options.OutputFilePath).As<IImageSaver>();
+        builder.RegisterType<PngSaver>()
+            .WithParameter(TypedParameter.From(options.OutputFilePath))
+            .As<IImageSaver>();
 
         return builder;
     }
@@ -40,9 +44,14 @@ public static class ContainerBuilderExtensions
     public static ContainerBuilder RegisterColorFactory(this ContainerBuilder builder, TagsCloudVisualizationOptions options)
     {
         if (options.ColorName == "random")
-            builder.RegisterType<RandomColorFactory>().As<IColorFactory>();
+            builder
+                .RegisterType<RandomColorFactory>()
+                .As<IColorFactory>();
         else
-            builder.RegisterType<DefaultColorFactory>().As<IColorFactory>().WithParameter("colorName", options.ColorName);
+            builder
+                .RegisterType<DefaultColorFactory>()
+                .As<IColorFactory>()
+                .WithParameter(TypedParameter.From(options.ColorName));
 
         return builder;
     }
@@ -59,12 +68,11 @@ public static class ContainerBuilderExtensions
     public static ContainerBuilder RegisterCloudLayouter(this ContainerBuilder builder, TagsCloudVisualizationOptions options)
     {
         builder
-            .RegisterType<CircularCloudLayouter>()
-            .WithParameters([
-                new NamedParameter("center", new Point(options.ImageWidth / 2, options.ImageHeight / 2)),
-                new NamedParameter("radius", options.LayoutRadius),
-                new NamedParameter("angleOffset", options.LayoutAngleOffset)
-            ])
+            .Register<CircularCloudLayouter>((_, _) =>
+                new CircularCloudLayouter(
+                    new Point(options.ImageWidth / 2, options.ImageHeight / 2),
+                    options.LayoutRadius,
+                    options.LayoutAngleOffset))
             .As<ICloudLayouter>();
 
         return builder;
@@ -72,11 +80,9 @@ public static class ContainerBuilderExtensions
 
     public static ContainerBuilder RegisterTagLayouter(this ContainerBuilder builder, TagsCloudVisualizationOptions options)
     {
-        builder.RegisterType<TagLayouterOptions>().WithParameters([
-            new NamedParameter("minFontSize", options.MinFontSize),
-            new NamedParameter("maxFontSize", options.MaxFontSize),
-            new NamedParameter("fontName", options.FontFamily)
-        ])
+        builder
+            .Register<TagLayouterOptions>((_, _) =>
+                new TagLayouterOptions(options.MinFontSize, options.MaxFontSize, options.FontFamily))
             .AsSelf();
         builder
             .RegisterType<TagLayouter>()
@@ -90,14 +96,14 @@ public static class ContainerBuilderExtensions
         builder
             .RegisterType<TagVisualizer>()
             .As<ITagVisualizer>()
-            .WithParameter("imageSize", new Size(options.ImageWidth, options.ImageHeight));
+            .WithParameter(TypedParameter.From(new Size(options.ImageWidth, options.ImageHeight)));
 
         return builder;
     }
 
     public static ContainerBuilder RegisterTagsCloudImageCreator(this ContainerBuilder builder)
     {
-        builder.RegisterType<TagsCloudImageCreator>().AsSelf();
+        builder.RegisterType<TagsCloudImageCreator>().As<ITagsCloudImageCreator>();
 
         return builder;
     }
